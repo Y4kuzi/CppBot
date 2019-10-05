@@ -7,7 +7,7 @@ class Test : public Module
       bot->hook_privmsg(this);
       } // will call parent's (Module) constructor. Good.
     public:
-      void onPrivmsg(Bot& b, Privmsg& p) override {
+      void onPrivmsg(Bot& b, Privmsg& p) {
         std::cout << "Module call" << std::endl;
         this->bot->raw("PRIVMSG #Bots :Hoi?");
       }
