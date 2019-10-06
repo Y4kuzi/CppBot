@@ -4,10 +4,13 @@
 #include <iostream>
 #include <vector>
 
-#include "userclass.hpp"
-#include "channelclass.hpp"
+//#include "userclass.hpp"
+//#include "channelclass.hpp"
 
-#include "modules.hpp"
+//#include "modules.hpp"
+
+#include "modules/m_test.hpp"
+//#include "modules/m_haha.hpp"
 
 using namespace std;
 
@@ -32,13 +35,14 @@ vector<string> admins (a, a + sizeof(a) / sizeof(a[0]) );
 
 int port = 6667;
 
+/*
 class Bot {
     public:
         char sockbuff[4096];
         int sock;
         string nickname;
         string event_user;
-        string event_target; // where events like privmsg and join occur. todo: assign Channel clas
+        string event_target; // where events like privmsg and join occur. todo: assign Channel class
         vector<User> users;
         vector<Channel> channels;
         //User event_user_class; // whoever triggered the event. todo: assign User class
@@ -76,7 +80,7 @@ class Bot {
             std::cout << "Notify ALL modules!" << std::endl;
             for (auto& mod : registered_privmsg) {
                 std::cout << "Notifying a module..." << std::endl;
-                mod->onPrivmsg(p);
+                mod->onPrivmsg(this, p);
             }
         }
 
@@ -89,11 +93,9 @@ class Bot {
     void event_nick(string line); // nick.cpp
     void load_modules()
     {
-        //Module* m = new Test(); this->hook_privmsg(m);
-        Module* m = new Test(this); this->hook_privmsg(m);
+        Module* m = new Test(); this->hook_privmsg(m);
+        //Module* m = new Haha(); this->hook_privmsg(m);
     }
-    //void Bot::load_module() { Module* m = new Test(this); this->hook_privmsg(m); }
-
 
     void hello()
     {
@@ -168,10 +170,10 @@ class Bot {
     {
         for (int x = 0; x < this->channels.size(); x++)
         {
-            //cout << "[FETCHCLASS] Does "+this->channels[x].name+" equal "+name+ "?" << endl;
+            cout << "[FETCHCLASS] Does "+this->channels[x].name+" equal "+name+ "?" << endl;
             if (this->channels[x].name == name)
             {
-                //cout << "Found matching class for "+nickname << endl;
+                cout << "Found matching class for "+nickname << endl;
                 return this->channels[x];
             }
         }
@@ -253,5 +255,6 @@ class Bot {
     }
 
 };
+*/
 
 #endif

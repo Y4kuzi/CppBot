@@ -1,3 +1,4 @@
+class Bot;
 class Privmsg {
     public:
         User& user;
@@ -5,25 +6,38 @@ class Privmsg {
         std::string message;
         Privmsg(User& user, Channel& channel, std::string message) : user(user), channel(channel), message(message)
         {
-        //    this->user = user;
-        //    this->channel = channel;
-        //    this->message = message;
         }
 };
-class Bot;
 
 /*
-class Module {
+class Notice {
     public:
-        virtual void onPrivmsg(Bot& b, Privmsg& p) = 0;
+        User& user;
+        Channel& channel;
+        std::string message;
+        Notice(User& user, Channel& channel, std::string message) : user(user), channel(channel), message(message)
+        {
+        }
 };
 */
+class Nick {
+    public:
+        User& user;
+        std::string newnick;
+        Nick(User& user, std::string newnick) : user(user), newnick(newnick)
+        {
+        }
+};
 
 
 class Module {
-    protected:
-        Bot* bot;  // should always be *, never mix it. You probably can, but just don't...for now
+    //protected:
+        //Bot* bot;  // should always be *, never mix it. You probably can, but just don't...for now
     public:
+        Bot* bot;  // should always be *, never mix it. You probably can, but just don't...for now
         Module(Bot* bot) : bot(bot) {} // 'bot' MUST be passed along when constructing
         virtual void onPrivmsg(Privmsg& p) = 0;
+        //virtual void onNotice(Notice& p) = 0;
+        virtual void onNick(Nick& p) = 0;
 };
+//*/

@@ -3,6 +3,20 @@
 #include <vector>
 #include <string>
 
+vector<Module *> registered_privmsg;
+void Bot::hook_privmsg(Module* mod)
+{
+    std::cout << "Registered module." << std::endl;
+    registered_privmsg.push_back(mod);
+}
+void Bot::notify_privmsg(Privmsg& p) {
+    std::cout << "Notify ALL modules!" << std::endl;
+    for (auto& mod : registered_privmsg) {
+        std::cout << "Notifying a module..." << std::endl;
+        mod->onPrivmsg(p);
+    }
+}
+
 void Bot::event_privmsg(string recv)
 {
     stringstream ss(recv);
@@ -133,6 +147,7 @@ void Bot::event_privmsg(string recv)
             {
                 msg = msg+" "+vec[x];
             }
+            msg.erase(msg.begin(), std::find_if(msg.begin(), msg.end(), std::bind1st(std::not_equal_to<char>(), ' ')));
             User& user = this->user_class(nick);
             Channel& channel = this->channel_class(vec[2]);
             Privmsg p = Privmsg(user, channel, msg);

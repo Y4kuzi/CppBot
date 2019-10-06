@@ -16,7 +16,7 @@ class Channel {
         Channel(string name)
         {
             this->name = name;
-            //this->users = users;
+            this->users = users;
             //Bot::create_chan_class(this->name);
         }
 };

@@ -7,6 +7,8 @@
 
 using namespace std; // prevent error: ‘string’ does not name a type
 
+class Bot;
+
 class User {
     public:
         string nickname;

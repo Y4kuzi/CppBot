@@ -1,7 +1,5 @@
 #include <iostream>
 #include <algorithm> // for std::remove
-//#include <string>
-//#include <cstring>
 #include <vector>
 
 void Bot::event_raw(int raw, string data) {
@@ -15,7 +13,10 @@ void Bot::event_raw(int raw, string data) {
         case 001:
             this->nickname = vec[2];
             std::cout << "Nickname set: "+this->nickname << endl;
-            this->connected_to_irc(); // welcome.cpp
+            for (int x = 0; x < irc_channel.size(); x++)
+            {
+                this->raw("JOIN "+irc_channel[x]);
+            }
             break;
 
         case 353: // names reply
@@ -38,7 +39,7 @@ void Bot::event_raw(int raw, string data) {
                 {
                     User u = User(nick);
                     this->users.push_back(u);
-                    std::cout << "[PRIVMSG] Added "+nick+" to userlist." << std::endl;
+                    std::cout << "[NAMES] Added "+nick+" to userlist." << std::endl;
                 }
                 User& user = this->user_class(nick);
                 channel.users.push_back(user);
