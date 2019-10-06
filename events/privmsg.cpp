@@ -67,38 +67,38 @@ void Bot::event_privmsg(string recv)
 
         if (cmd == "ping") {
             //cout << "Ping." << endl;
-            this->say("PING MOTHERFUCKER "+nick);
+            say("PONG MOTHERFUCKER "+nick);
         }
 
         else if (cmd == "setprefix" and std::find(std::begin(admins), std::end(admins), nick) != admins.end() and vec.size() > 4) {
             bot_prefix = vec[4].at(0);
-            this->say("Prefix changed to \""+bot_prefix+"\".");
+            say("Prefix changed to \""+bot_prefix+"\".");
         }
 
         else if (cmd == "whereami") {
-            this->say("I am on the following channels:");
-            for (int i = 0; i < this->channels.size(); i++)
+            say("I am on the following channels:");
+            for (int i = 0; i < channels.size(); i++)
             {
-                this->say(this->channels[i].name);
+                say(channels[i].name);
             }
         }
 
         else if (cmd == "userlist") {
-            this->say("I am woke about the following users:");
-            for (int i = 0; i < this->users.size(); i++)
+            say("I am woke about the following users:");
+            for (int i = 0; i < users.size(); i++)
             {
-                this->say(this->users[i].fullmask());
+                say(users[i].fullmask());
             }
         }
 
         else if (cmd == "chanlist") {
-            this->say("I am woke on the following channels:");
-            for (int i = 0; i < this->channels.size(); i++)
+            say("I am woke on the following channels:");
+            for (int i = 0; i < channels.size(); i++)
             {
-                int usercount = this->channels[i].users.size();
+                int usercount = channels[i].users.size();
                 std::string str_usercount = std::to_string(usercount);
                 //string str_usercount = "N/A";
-                this->say(this->channels[i].name+" -- Usercount: "+str_usercount);
+                say(channels[i].name+" -- Usercount: "+str_usercount);
             }
         }
 
@@ -109,7 +109,7 @@ void Bot::event_privmsg(string recv)
             }
             if (!isNumber(vec[4]))
             {
-                this->say("Invalid number.");
+                say("Invalid number.");
                 return;
             }
 

@@ -20,8 +20,6 @@ class _8Ball : public Module
             this->bot->say(result);
         }
       }
-      void onNick(Nick& p) {
-        this->bot->raw("PRIVMSG #Bots :"+p.user.nickname+ " jij deed nickchange naar "+p.newnick+" broer");
-      }
+      void onNick(Nick& p) { }
 
 };

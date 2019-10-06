@@ -155,13 +155,14 @@ void Bot::say(string msg)
     {
         target = this->event_target;
     }
-    this->raw("PRIVMSG "+target +" :"+msg);
+    raw("PRIVMSG "+target +" :"+msg);
 }
 
 void Bot::load_modules()
 {
-    #include "modules/m_test.hpp"
     Module* m;
+
+    #include "modules/m_test.hpp"
     m = new Test(this);
 
     #include "modules/m_8ball.hpp"

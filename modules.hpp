@@ -1,5 +1,5 @@
 class Bot;
-class Privmsg {
+class Privmsg { // todo: include vector<string> with message words
     public:
         User& user;
         Channel& channel;
@@ -31,8 +31,6 @@ class Nick {
 
 
 class Module {
-    //protected:
-        //Bot* bot;  // should always be *, never mix it. You probably can, but just don't...for now
     public:
         Bot* bot;  // should always be *, never mix it. You probably can, but just don't...for now
         Module(Bot* bot) : bot(bot) {} // 'bot' MUST be passed along when constructing
