@@ -11,6 +11,15 @@ class Privmsg {
         }
 };
 class Bot;
+
+/*
+class Module {
+    public:
+        virtual void onPrivmsg(Bot& b, Privmsg& p) = 0;
+};
+*/
+
+
 class Module {
     protected:
         Bot* bot;  // should always be *, never mix it. You probably can, but just don't...for now

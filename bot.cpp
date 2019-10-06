@@ -19,14 +19,6 @@
 #include "modules/m_test.cpp"
 //#include "modules/m_haha.cpp"
 
-// at this point Test and Haha are fully defined...
-void Bot::load_modules() {
-    Module* m;
-
-    // ...so this'll work now
-    m = new Test(this);
-    //m = new Haha(this);
-};
 
 int main() {
         Bot b1 = Bot("Sint-Ahmet_Lord-Ipsum");

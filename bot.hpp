@@ -87,7 +87,11 @@ class Bot {
     void event_part(string line); // part.cpp
     void event_kick(string line); // kick.cpp
     void event_nick(string line); // nick.cpp
-    void load_modules();
+    void load_modules()
+    {
+        //Module* m = new Test(); this->hook_privmsg(m);
+        Module* m = new Test(this); this->hook_privmsg(m);
+    }
     //void Bot::load_module() { Module* m = new Test(this); this->hook_privmsg(m); }
 
 
@@ -98,7 +102,7 @@ class Bot {
 
     void listen()
     {
-        //this->load_modules();
+        this->load_modules();
         cout << "Listening..." << endl;
         while (1) {
                 memset(&sockbuff, '\0', sizeof(sockbuff)); // make sure sockbuff[] is empty
