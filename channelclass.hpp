@@ -5,7 +5,7 @@
 
 #include "userclass.hpp"
 
-using namespace std; // prevent error: ‘string’ does not name a type
+using namespace std;
 
 class User;
 
@@ -17,7 +17,6 @@ class Channel {
         {
             this->name = name;
             this->users = users;
-            //Bot::create_chan_class(this->name);
         }
 };
 

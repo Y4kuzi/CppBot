@@ -4,10 +4,12 @@
 #include <string>
 
 vector<Module *> registered_privmsg;
+
 void Bot::hook_privmsg(Module* mod)
 {
     std::cout << "Registered module." << std::endl;
     registered_privmsg.push_back(mod);
+
 }
 void Bot::notify_privmsg(Privmsg& p) {
     std::cout << "Notify ALL modules!" << std::endl;
@@ -29,12 +31,13 @@ void Bot::event_privmsg(string recv)
     vector<string> parts;
     boost::split(parts, origin, boost::is_any_of("!@"));
     string nick = parts[0];
+    Channel& channel = channels_map.find(event_target)->second;
 
-    if (this->is_user(nick))
+    if (users_map.count(nick))
     {
         string ident = parts[1];
         string host = parts[2];
-        User& user = this->user_class(nick);
+        User& user = users_map.find(nick)->second;
         user.nickname = nick;
         //std::cout << "Setting nickname: "+ nick << std::endl;
         user.ident = ident;
@@ -75,24 +78,38 @@ void Bot::event_privmsg(string recv)
             say("Prefix changed to \""+bot_prefix+"\".");
         }
 
-        else if (cmd == "whereami") {
-            say("I am on the following channels:");
-            for (int i = 0; i < channels.size(); i++)
+        else if (cmd == "whoami") {
+            if (!users_map.count(event_user))
             {
-                say(channels[i].name);
+                say("I don't know you.");
+                return;
             }
+            User& user = users_map.find(event_user)->second;
+            say("This is what I know about you:");
+            say("Your nickname is: "+user.nickname);
+            say("Your ident is: "+user.ident);
+            say("Your host is: "+user.host);
         }
 
         else if (cmd == "userlist") {
             say("I am woke about the following users:");
-            for (int i = 0; i < users.size(); i++)
+            for(auto it = users_map.cbegin(); it != users_map.cend(); ++it)
             {
-                say(users[i].fullmask());
+                User& user = users_map.find(it->second.nickname)->second;
+                say(user.fullmask());
+                //say(it->second.fullmask());
             }
         }
 
         else if (cmd == "chanlist") {
             say("I am woke on the following channels:");
+            for (auto it = channels_map.cbegin(); it != channels_map.cend(); ++it)
+            {
+                int usercount = it->second.users.size();
+                std::string str_usercount = std::to_string(usercount);
+                say(it->first+" -- Usercount: "+str_usercount); // << " " << it->second.first << " " << it->second.second << "\n";
+            }
+            /*
             for (int i = 0; i < channels.size(); i++)
             {
                 int usercount = channels[i].users.size();
@@ -100,6 +117,7 @@ void Bot::event_privmsg(string recv)
                 //string str_usercount = "N/A";
                 say(channels[i].name+" -- Usercount: "+str_usercount);
             }
+            */
         }
 
         else if (cmd == "c") {
@@ -123,7 +141,7 @@ void Bot::event_privmsg(string recv)
                 --exponent;
             }
             std::string str_result = std::to_string(result);
-            this->say(str_result);
+            say(str_result);
         }
 
         else if (cmd == "raw" and std::find(std::begin(admins), std::end(admins), nick) != admins.end()) {
@@ -140,7 +158,7 @@ void Bot::event_privmsg(string recv)
             this->raw(raw);
         }
 
-        if (this->is_user(nick))
+        if (users_map.count(event_user))
         {
             string msg;
             for (int x = 3; x < vec.size(); x++)
@@ -148,12 +166,15 @@ void Bot::event_privmsg(string recv)
                 msg = msg+" "+vec[x];
             }
             msg.erase(msg.begin(), std::find_if(msg.begin(), msg.end(), std::bind1st(std::not_equal_to<char>(), ' ')));
-            User& user = this->user_class(nick);
-            Channel& channel = this->channel_class(vec[2]);
+            User& user = users_map.find(nick)->second;
+            Channel& channel = channels_map.find(event_target)->second;
             Privmsg p = Privmsg(user, channel, msg);
             std::cout << "Checking for modules..." << std::endl;
-            this->notify_privmsg(p);
+            notify_privmsg(p);
+
         }
+
+
 
     }
 }

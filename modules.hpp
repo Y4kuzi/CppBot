@@ -1,4 +1,5 @@
 class Bot;
+
 class Privmsg { // todo: include vector<string> with message words
     public:
         User& user;
@@ -9,7 +10,7 @@ class Privmsg { // todo: include vector<string> with message words
         }
 };
 
-/*
+
 class Notice {
     public:
         User& user;
@@ -19,7 +20,7 @@ class Notice {
         {
         }
 };
-*/
+
 class Nick {
     public:
         User& user;
@@ -29,13 +30,42 @@ class Nick {
         }
 };
 
+class Join {
+    public:
+        User& user;
+        Channel& channel;
+        Join(User& user, Channel& channel) : user(user), channel(channel)
+        {
+        }
+};
+
+class Part {
+    public:
+        User& user;
+        Channel& channel;
+        Part(User& user, Channel& channel) : user(user), channel(channel)
+        {
+        }
+};
+
+class Quit {
+    public:
+        User& user;
+        Quit(User& user) : user(user)
+        {
+        }
+};
+
 
 class Module {
     public:
         Bot* bot;  // should always be *, never mix it. You probably can, but just don't...for now
-        Module(Bot* bot) : bot(bot) {} // 'bot' MUST be passed along when constructing
+        Module(Bot* bot) : bot(bot) { } // 'bot' MUST be passed along when constructing
         virtual void onPrivmsg(Privmsg& p) = 0;
-        //virtual void onNotice(Notice& p) = 0;
+        virtual void onNotice(Notice& p) = 0;
         virtual void onNick(Nick& p) = 0;
+        virtual void onJoin(Join& p) = 0;
+        virtual void onPart(Part& p) = 0;
+        virtual void onQuit(Quit& p) = 0;
 };
 //*/

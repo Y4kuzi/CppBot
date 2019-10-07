@@ -15,33 +15,29 @@ void Bot::notify_nick(Nick& p) {
     }
 }
 
-
 void Bot::event_nick(string recv)
 {
-
     stringstream ss(recv);
     vector<string> vec;
     string word;
     while (ss >> word) { vec.push_back(word); }
     string newnick = vec[2];
-    if (newnick.at(0) == ':') { // compare single char?
-        // strip :
+    if (newnick.at(0) == ':') {
         newnick = newnick.erase(0, 1);
     }
-    if (this->event_user == this->nickname)
+    if (event_user == nickname)
     {
-        cout << "[NICK] Internal nickname set to: "+this->nickname << endl;
+        cout << "[NICK] Internal nickname set to: "+nickname << endl;
     }
-    cout << "[NICK] "+this->event_user +" changed nickname to "+newnick << endl;
+    cout << "[NICK] "+event_user +" changed nickname to "+newnick << endl;
 
-    User& user = this->user_class(this->event_user);
+    User& user = users_map.find(event_user)->second;
     cout << "[NICK] Current known nickname: "+user.nickname << endl;
     string oldnick = user.nickname;
     Nick p = Nick(user, newnick);
     std::cout << "[NICK] Checking for hooks..." << std::endl;
-    this->notify_nick(p);
-
-    // Finally, change the nickname property of the User.
+    notify_nick(p);
+    users_map.emplace(newnick, user);
+    users_map.erase(user.nickname);
     user.nickname = newnick;
-
 }

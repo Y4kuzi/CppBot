@@ -21,11 +21,12 @@ class User {
             this->ident = ident;
             this->host = host;
             this->channels = channels;
+            cout << "Created user class for: "+this->nickname << endl;
         }
 
     string fullmask()
     {
-        string mask = this->nickname+"!"+this->ident+"@"+this->host;
+        string mask = nickname+"!"+ident+"@"+host;
         return mask;
     }
 

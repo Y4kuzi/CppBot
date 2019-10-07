@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <vector>
+#include <map>
 
 #include "userclass.hpp"
 #include "channelclass.hpp"
@@ -38,11 +39,10 @@ class Bot {
         int sock;
         string nickname;
         string event_user;
-        string event_target; // where events like privmsg and join occur. todo: assign Channel clas
-        vector<User> users;
-        vector<Channel> channels;
-        //User event_user_class; // whoever triggered the event. todo: assign User class
-        //vector<string> channels;
+        string event_target;
+        map<string, User> users_map;
+        map<string, Channel> channels_map;
+
         Bot(string nickname)
         {
             struct sockaddr_in addr;
@@ -51,16 +51,11 @@ class Bot {
             addr.sin_addr.s_addr = *(unsigned long*)host->h_addr;
             addr.sin_family = AF_INET;
             addr.sin_port = htons((unsigned short)port);
-            this->sock = socket(AF_INET, SOCK_STREAM, 0);
-            this->nickname = nickname;
-            connect(this->sock, (struct sockaddr *)&addr, sizeof(addr));
-            this->raw("NICK Sint-Ahmet_Lord-Ipsum");
-            this->raw("USER ahmet 0 0 :Sint Ahmet C++ ding");
-            this->event_user = event_user;
-            //this->event_user_class = event_user_class;
-            this->event_target = event_target;
-            this->users = users;
-            this->channels = channels;
+            sock = socket(AF_INET, SOCK_STREAM, 0);
+            //this->nickname = nickname;
+            connect(sock, (struct sockaddr *)&addr, sizeof(addr));
+            raw("NICK Sint-Ahmet_Lord-Ipsum");
+            raw("USER ahmet 0 0 :Sint Ahmet C++ ding");
         }
 
 
@@ -69,32 +64,32 @@ class Bot {
     void notify_privmsg(Privmsg& p);
     void hook_privmsg(Module* mod);
 
-    //void notify_notice(Notice& p);
-    //void hook_notice(Module* mod);
-
     void notify_nick(Nick& p);
     void hook_nick(Module* mod);
 
+    void notify_join(Join& p);
+    void hook_join(Module* mod);
+
+    void notify_part(Part& p);
+    void hook_part(Module* mod);
+
 
     void event_raw(int raw, string line); // raw.cpp
-    void connected_to_irc(); // welcome.cpp
     void event_privmsg(string line); // privmsg.cpp
     void event_join(string line); // join.cpp
     void event_part(string line); // part.cpp
     void event_kick(string line); // kick.cpp
+    void event_quit(string line); // quit.cpp
     void event_nick(string line); // nick.cpp
     void load_modules();
-    void hello();
     void listen();
     void raw(string data);
-    bool is_user(string nickname);
-    bool is_channel(string name);
-    User& user_class(string nickname);
-    Channel& channel_class(string name);
+    bool isin_channelusers_vector(Channel& channel, string nickname);
+    void create_user(string name);
     void create_channel(string name);
     void say(string msg);
     void handle_recv(string sockbuff);
-    void insert_in_channels(Channel& channel, User& user);
+
 };
 
 #endif

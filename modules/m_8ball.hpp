@@ -6,6 +6,7 @@ class _8Ball : public Module
     public:
       _8Ball(Bot* bot) : Module(bot) {
           bot->hook_privmsg(this);
+
           }
       void onPrivmsg(Privmsg& p) {
         std::cout << "Module call Test" << std::endl;
@@ -17,9 +18,14 @@ class _8Ball : public Module
             int i = rand() % answers.size();
             std::cout << answers.size() << endl;
             string result = answers[i];
-            this->bot->say(result);
+            bot->say(result);
         }
       }
-      void onNick(Nick& p) { }
+    void onNotice(Notice& p) { }
+    void onNick(Nick& p) { }
+    void onJoin(Join& p) {}
+    void onPart(Part& p) {}
+    void onQuit(Quit& p) {}
+
 
 };

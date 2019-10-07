@@ -11,8 +11,8 @@ void Bot::event_raw(int raw, string data) {
     switch(raw)
     {
         case 001:
-            this->nickname = vec[2];
-            std::cout << "Nickname set: "+this->nickname << endl;
+            nickname = vec[2];
+            std::cout << "Nickname set: "+nickname << endl;
             for (int x = 0; x < irc_channel.size(); x++)
             {
                 this->raw("JOIN "+irc_channel[x]);
@@ -20,10 +20,7 @@ void Bot::event_raw(int raw, string data) {
             break;
 
         case 353: // names reply
-            std::cout << "Raw names reply" << std::endl;
-            std::cout << "Data: "+data << std::endl;
-            //string channel = vec[4];
-            Channel& channel = this->channel_class(vec[4]);
+            Channel& channel = channels_map.find(vec[4])->second;
             string nick;
 
             char chars[] = ":*!~&@%+.";
@@ -33,16 +30,15 @@ void Bot::event_raw(int raw, string data) {
                     nick.erase(std::remove(nick.begin(), nick.end(), chars[y]), nick.end());
                 }
 
-                // only do this if not yet exist.
+                if (!users_map.count(nick)) {
+                    create_user(nick);
+                    }
 
-                if (!this->is_user(nick))
+                User& user = users_map.find(nick)->second;
+                if (!isin_channelusers_vector(channel, user.nickname))
                 {
-                    User u = User(nick);
-                    this->users.push_back(u);
-                    std::cout << "[NAMES] Added "+nick+" to userlist." << std::endl;
+                    channel.users.push_back(user);
                 }
-                User& user = this->user_class(nick);
-                channel.users.push_back(user);
                 user.channels.push_back(channel);
                 //std::cout << "Channels: "+user.channels[0] << std::endl;
             };
