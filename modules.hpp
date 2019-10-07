@@ -48,6 +48,15 @@ class Part {
         }
 };
 
+class Kick {
+    public:
+        User& user;
+        Channel& channel;
+        Kick(User& user, Channel& channel) : user(user), channel(channel)
+        {
+        }
+};
+
 class Quit {
     public:
         User& user;
@@ -63,9 +72,10 @@ class Module {
         Module(Bot* bot) : bot(bot) { } // 'bot' MUST be passed along when constructing
         virtual void onPrivmsg(Privmsg& p) = 0;
         virtual void onNotice(Notice& p) = 0;
-        virtual void onNick(Nick& p) = 0;
         virtual void onJoin(Join& p) = 0;
         virtual void onPart(Part& p) = 0;
+        virtual void onKick(Part& p) = 0;
         virtual void onQuit(Quit& p) = 0;
+        virtual void onNick(Nick& p) = 0;
 };
 //*/

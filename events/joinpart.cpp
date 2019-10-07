@@ -59,7 +59,7 @@ void Bot::event_join(string recv)
     if (!isin_channelusers_vector(channel, event_user))
     {
         std::cout << "Pushing back to channel.users" << std::endl;
-        channel.users.push_back(user);
+        channel.users.push_back(&user);
         std::cout << "Done." << std::endl;
     }
 
@@ -83,7 +83,7 @@ void Bot::event_part(string recv)
 
     for (int x = 0; x < channel.users.size(); x++)
     {
-        if (channel.users[x].nickname == event_user)
+        if (channel.users[x]->nickname == event_user)
         {
             channel.users.erase(channel.users.begin() + x);
             cout << "User "+user.nickname+" erased from channel vector." << endl;

@@ -12,7 +12,7 @@ class User;
 class Channel {
     public:
         string name;
-        vector<User> users;
+        vector<User*> users;
         Channel(string name)
         {
             this->name = name;

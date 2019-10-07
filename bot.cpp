@@ -45,7 +45,7 @@ bool Bot::isin_channelusers_vector(Channel& channel, string nickname)
     for (int x = 0; x < channel.users.size(); x++)
     {
         //std::cout << "Does "+channel.users[x].nickname+" equal "+nickname+"?" << std::endl;
-        if (channel.users[x].nickname == nickname) { return true; }
+        if (channel.users[x]->nickname == nickname) { return true; }
     }
     return false;
 }
@@ -79,6 +79,7 @@ void Bot::handle_recv(string sockbuff) {
                 string nick = origin.substr(0, origin.find("!") +0);
                 event_user = nick;
                 event_target = vec[2]; // todo: channel classes and assign instance here.
+                User& event_user_class = users_map.find(nick)->second;
                 if (event_target.at(0) == ':') { // compare single char?
                     // strip :
                     event_target = event_target.erase(0, 1);

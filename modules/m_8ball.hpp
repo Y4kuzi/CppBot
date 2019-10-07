@@ -9,14 +9,14 @@ class _8Ball : public Module
 
           }
       void onPrivmsg(Privmsg& p) {
-        std::cout << "Module call Test" << std::endl;
-        std::cout << "Privmsg.message: " << p.message << endl;
+        cout << "Module call Test" << endl;
+        cout << "Privmsg.message: " << p.message << endl;
         if (p.message == ":!8ball")
         {
             string a[] = {"Ja", "Nee", "Misschien"};
             vector<string> answers (a, a + sizeof(a) / sizeof(a[0]) );
             int i = rand() % answers.size();
-            std::cout << answers.size() << endl;
+            cout << answers.size() << endl;
             string result = answers[i];
             bot->say(result);
         }
@@ -25,6 +25,7 @@ class _8Ball : public Module
     void onNick(Nick& p) { }
     void onJoin(Join& p) {}
     void onPart(Part& p) {}
+    void onKick(Part& p) {}
     void onQuit(Quit& p) {}
 
 

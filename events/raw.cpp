@@ -37,7 +37,7 @@ void Bot::event_raw(int raw, string data) {
                 User& user = users_map.find(nick)->second;
                 if (!isin_channelusers_vector(channel, user.nickname))
                 {
-                    channel.users.push_back(user);
+                    channel.users.push_back(&user);
                 }
                 user.channels.push_back(channel);
                 //std::cout << "Channels: "+user.channels[0] << std::endl;

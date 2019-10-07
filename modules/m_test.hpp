@@ -18,16 +18,12 @@ class Test : public Module
     void onNotice(Notice& p) { }
 
       void onNick(Nick& p) {
-        bot->raw("PRIVMSG #Bots :"+p.user.nickname+ " jij deed nickchange naar "+p.newnick+" broer");
+        bot->raw("PRIVMSG #Bots :"+p.user.nickname+ " jij deed nickchange naar "+p.newnick+", broer");
       }
 
-    void onJoin(Join& p) {
-        //bot->say("Join event");
-        //bot->say("Someone joined channel "+p.channel.name+" so sending a greet!");
-        //bot->say("But what about a second greet?");
-
-    }
+    void onJoin(Join& p) { }
     void onPart(Part& p) {}
+    void onKick(Part& p) {}
     void onQuit(Quit& p) {}
 };
 

@@ -40,6 +40,7 @@ class Bot {
         string nickname;
         string event_user;
         string event_target;
+        //User& event_target_class;
         map<string, User> users_map;
         map<string, Channel> channels_map;
 
@@ -72,6 +73,12 @@ class Bot {
 
     void notify_part(Part& p);
     void hook_part(Module* mod);
+
+    void notify_kick(Kick& p);
+    void hook_kick(Module* mod);
+
+    void notify_quit(Quit& p);
+    void hook_quit(Module* mod);
 
 
     void event_raw(int raw, string line); // raw.cpp

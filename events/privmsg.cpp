@@ -39,26 +39,19 @@ void Bot::event_privmsg(string recv)
         string host = parts[2];
         User& user = users_map.find(nick)->second;
         user.nickname = nick;
-        //std::cout << "Setting nickname: "+ nick << std::endl;
         user.ident = ident;
-        //std::cout << "Setting ident: "+ ident << std::endl;
         user.host = host;
-        //std::cout << "Setting host: "+ host << std::endl;
-        std::cout << "[PRIVMSG] Info of " +nick+ " updated: "+user.fullmask() << std::endl;
+        //std::cout << "[PRIVMSG] Info of " +nick+ " updated: "+user.fullmask() << std::endl;
     }
 
 
     if (vec[3].size() == 1)
     {
-        std::cout << "Current vec[3]: "+vec[3] << std::endl;
         std::rotate(vec.begin(), vec.begin()+1, vec.end());
         vec[3] = ":"+vec[3];
-        std::cout << "New vec[3]: "+vec[3] << std::endl;
         vec.pop_back();
     }
-    //for (auto& word : vec) {
-    //    std::cout << "[" << word << "]" << std::endl;
-    //}
+
     string prefix = vec[3];
     prefix = prefix.at(1);
     string cmd = vec[3];
@@ -66,10 +59,7 @@ void Bot::event_privmsg(string recv)
     transform(cmd.begin(), cmd.end(), cmd.begin(), ::tolower);
 
     if (prefix == bot_prefix) {
-        // loop through modules to check for "privmsg" hook?
-
         if (cmd == "ping") {
-            //cout << "Ping." << endl;
             say("PONG MOTHERFUCKER "+nick);
         }
 
@@ -91,13 +81,27 @@ void Bot::event_privmsg(string recv)
             say("Your host is: "+user.host);
         }
 
+        else if (cmd == "whoishere") {
+            Channel& channel = channels_map.find(event_target)->second;
+            // Check if user was on this channel.
+
+            for (int x = 0; x < channel.users.size(); x++)
+            {
+                say("I found: "+channel.users[x]->fullmask()+" on "+channel.name);
+            }
+        }
+
+
         else if (cmd == "userlist") {
             say("I am woke about the following users:");
-            for(auto it = users_map.cbegin(); it != users_map.cend(); ++it)
+            //for (auto it = users_map.cbegin(); it != users_map.cend(); ++it)
+            for (const auto & u : users_map)
             {
-                User& user = users_map.find(it->second.nickname)->second;
+                User& user = users_map.find(u.second.nickname)->second;
+                //const User& u = it->second;
+                //User& user = u.second;
                 say(user.fullmask());
-                //say(it->second.fullmask());
+                //say(u.second.fullmask());
             }
         }
 

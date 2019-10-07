@@ -32,12 +32,13 @@ void Bot::event_nick(string recv)
     cout << "[NICK] "+event_user +" changed nickname to "+newnick << endl;
 
     User& user = users_map.find(event_user)->second;
-    cout << "[NICK] Current known nickname: "+user.nickname << endl;
     string oldnick = user.nickname;
+    cout << "[NICK] Current known nickname: "+user.nickname << endl;
     Nick p = Nick(user, newnick);
     std::cout << "[NICK] Checking for hooks..." << std::endl;
     notify_nick(p);
     users_map.emplace(newnick, user);
     users_map.erase(user.nickname);
-    user.nickname = newnick;
+    User& user2 = users_map.find(newnick)->second;
+    user2.nickname = newnick;
 }

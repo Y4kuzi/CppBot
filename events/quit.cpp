@@ -15,15 +15,15 @@ void Bot::event_quit(string recv)
 
         for (int x = 0; x < channel.users.size(); x++)
         {
-            if (channel.users[x].nickname == event_user)
+            cout << "[QUIT] I found "+channel.users[x]->nickname+" on "+channel.name << endl;
+            if (channel.users[x]->nickname == user.nickname)
             {
                 channel.users.erase(channel.users.begin() + x);
                 cout << "[QUIT] User "+user.nickname+" erased from channel "+channel.name+" vector." << endl;
                 //break;
             }
         }
-
-
     }
-
+    users_map.erase(user.nickname);
+    cout << "[QUIT] User "+user.nickname+" erased from users_map" << endl;
 }
