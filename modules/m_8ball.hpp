@@ -9,8 +9,8 @@ class _8Ball : public Module
 
           }
       void onPrivmsg(Privmsg& p) {
-        cout << "Module call Test" << endl;
-        cout << "Privmsg.message: " << p.message << endl;
+        //cout << "Module call Test" << endl;
+        //cout << "Privmsg.message: " << p.message << endl;
         if (p.message == ":!8ball")
         {
             string a[] = {"Ja", "Nee", "Misschien"};

@@ -11,14 +11,14 @@ class Test : public Module
       void onPrivmsg(Privmsg& p) {
         if (p.message == ":!test")
         {
-            bot->raw("PRIVMSG #Bots :Hoi? Ik sta in m_test.hpp o/");
+            bot->say("Hoi? Ik sta in m_test.hpp o/");
         }
       }
 
     void onNotice(Notice& p) { }
 
       void onNick(Nick& p) {
-        bot->raw("PRIVMSG #Bots :"+p.user.nickname+ " jij deed nickchange naar "+p.newnick+", broer");
+        //bot->raw("PRIVMSG #Bots :"+p.user.nickname+ " jij deed nickchange naar "+p.newnick+", broer");
       }
 
     void onJoin(Join& p) { }
@@ -30,10 +30,10 @@ class Test : public Module
 class TestNew {
     public:
         Bot* bot;
-        User& user;
+        User user;
         std::string target;
         // todo: some other data to read
-        TestNew(Bot* bot, User& user, std::string target) : bot(bot), user(user), target(target)
+        TestNew(Bot* bot, User user, std::string target) : bot(bot), user(user), target(target)
         {
         }
 };

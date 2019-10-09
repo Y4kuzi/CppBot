@@ -7,27 +7,41 @@ void Bot::event_raw(int raw, string data) {
     vector<string> vec;
     string word;
     while (ss >> word) { vec.push_back(word); }
-    //std::cout << "Raw: "+raw << std::endl;
+    //cout << "Raw: "+raw << endl;
     switch(raw)
     {
         case 001:
             nickname = vec[2];
-            std::cout << "Nickname set: "+nickname << endl;
+            cout << "Nickname set: "+nickname << endl;
             for (int x = 0; x < irc_channel.size(); x++)
             {
                 this->raw("JOIN "+irc_channel[x]);
             }
             break;
 
+
+        case 005:
+            for (int x = 3; x < vec.size(); x++) {
+                vector<std::string> raw_parts;
+                boost::split(raw_parts, vec[x], boost::is_any_of("="));
+                if (vec[x].find("CHANTYPES=") != string::npos) {
+                    cout << "Found chantypes in word: "+vec[x] << endl;
+                    chantypes = raw_parts[1];
+                }
+
+            }
+            break;
+
         case 353: // names reply
+        {
             Channel& channel = channels_map.find(vec[4])->second;
             string nick;
 
-            char chars[] = ":*!~&@%+.";
+            char remove_chars[] = ":*!~&@%+.";
             for (int x = 5; x<vec.size(); x++) {
                 nick = vec[x];
-                for (int y = 0; y < strlen(chars); y++) {
-                    nick.erase(std::remove(nick.begin(), nick.end(), chars[y]), nick.end());
+                for (int y = 0; y < strlen(remove_chars); y++) {
+                    nick.erase(std::remove(nick.begin(), nick.end(), remove_chars[y]), nick.end());
                 }
 
                 if (!users_map.count(nick)) {
@@ -35,14 +49,16 @@ void Bot::event_raw(int raw, string data) {
                     }
 
                 User& user = users_map.find(nick)->second;
-                if (!isin_channelusers_vector(channel, user.nickname))
-                {
+                if(find(channel.users.begin(), channel.users.end(), &user) == channel.users.end()) {
                     channel.users.push_back(&user);
                 }
                 user.channels.push_back(channel);
-                //std::cout << "Channels: "+user.channels[0] << std::endl;
             };
-
+        }
             break;
+
+        case 376:
+            break;
+
     }
 }

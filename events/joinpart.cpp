@@ -4,10 +4,8 @@
 vector<Module *> registered_join;
 vector<Module *> registered_part;
 
-// Join hook
 void Bot::hook_join(Module* mod)
 {
-    std::cout << "[JOIN] Registered module." << std::endl;
     registered_join.push_back(mod);
 
 }
@@ -41,6 +39,10 @@ void Bot::event_join(string recv)
     vector<string> vec;
     string word;
     while (ss >> word) { vec.push_back(word); }
+    string origin = vec[0].erase(0, 1);
+
+    vector<string> parts;
+    boost::split(parts, origin, boost::is_any_of("!@"));
 
     if (!users_map.count(event_user)) {
         create_user(event_user);
@@ -53,20 +55,17 @@ void Bot::event_join(string recv)
     User& user = users_map.find(event_user)->second;
     Channel& channel = channels_map.find(event_target)->second;
 
-    std::cout << "Check if user isin_channelusers_vector" << std::endl;
-    std::cout << event_user << std::endl;
-    std::cout << channel.name << std::endl;
-    if (!isin_channelusers_vector(channel, event_user))
-    {
-        std::cout << "Pushing back to channel.users" << std::endl;
-        channel.users.push_back(&user);
-        std::cout << "Done." << std::endl;
-    }
+    string ident = parts[1];
+    string host = parts[2];
+    user.ident = ident;
+    user.host = host;
+
+    std::cout << "[JOIN] Pushing back to channel.users" << std::endl;
+    channel.users.push_back(&user);
 
     Join p = Join(user, channel);
     std::cout << "[JOIN] Checking for modules..." << std::endl;
     notify_join(p);
-
 }
 
 void Bot::event_part(string recv)
@@ -76,24 +75,13 @@ void Bot::event_part(string recv)
     vector<string> vec;
     string word;
     while (ss >> word) { vec.push_back(word); }
-    cout << event_user +" has left channel channel "+ event_target << endl;
+    cout << "[PART] "+event_user+" has left channel channel "+ event_target << endl;
 
     User& user = users_map.find(event_user)->second;
     Channel& channel = channels_map.find(event_target)->second;
+    user.onPart(channel);
 
-    for (int x = 0; x < channel.users.size(); x++)
-    {
-        if (channel.users[x]->nickname == event_user)
-        {
-            channel.users.erase(channel.users.begin() + x);
-            cout << "User "+user.nickname+" erased from channel vector." << endl;
-            break;
-        }
-    }
-
-    // I left, so remove channel class from Bot::channels
-    if (user.nickname == nickname)
-    {
+    if (user.nickname == nickname) {
         channels_map.erase(channel.name);
         std::cout << "[PART] Removed channel from map." << std::endl;
     }
@@ -101,6 +89,5 @@ void Bot::event_part(string recv)
     Part p = Part(user, channel);
     std::cout << "[PART] Checking for modules..." << std::endl;
     notify_part(p);
-
 
 }

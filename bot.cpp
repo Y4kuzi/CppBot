@@ -7,6 +7,9 @@
 #include <boost/algorithm/string.hpp> // libboost-dev
 
 #include "header.hpp"
+#include "userclass.hpp"
+#include "channelclass.hpp"
+#include "modules.hpp"
 
 #include "events/raw.cpp"
 #include "events/privmsg.cpp"
@@ -18,7 +21,7 @@
 void Bot::raw(string data)
 {
     string d = data+"\r\n";
-    send(this->sock, d.c_str(), d.size(), 0);
+    send(sock, d.c_str(), d.size(), 0);
     stringstream ss(data);
     vector<string> vec;
     string word;
@@ -34,25 +37,15 @@ void Bot::create_channel(string name)
 
 void Bot::create_user(string name)
 {
-    User user(name);
+    User user(this, name);
     users_map.emplace(user.nickname, user);
-}
-
-bool Bot::isin_channelusers_vector(Channel& channel, string nickname)
-{
-    //std::cout << "Checking channel.users vector..." << std::endl;
-    //std::cout << channel.users.size() << std::endl;
-    for (int x = 0; x < channel.users.size(); x++)
-    {
-        //std::cout << "Does "+channel.users[x].nickname+" equal "+nickname+"?" << std::endl;
-        if (channel.users[x]->nickname == nickname) { return true; }
-    }
-    return false;
 }
 
 void Bot::handle_recv(string sockbuff) {
     stringstream ss(sockbuff);
     string line;
+    //cout << "[RECV] Sockbuff size: ";
+    //cout << sockbuff.size() << endl;
     while (getline(ss, line, '\n')) {
 
         stringstream ss(line);
@@ -66,31 +59,35 @@ void Bot::handle_recv(string sockbuff) {
             raw("PONG "+vec[1]);
             continue;
         }
-        cout << ">> " << line << endl;
 
         if (vec.size() > 2) {
+            if (vec[1] != "372") { // Skip MOTD spam in cout.
+                cout << ">> " << line << endl;
+            }
             if (isNumber(vec[1])) {
                 int raw;
                 istringstream ( vec[1] ) >> raw;
                 event_raw(raw, line);
+                continue;
             }
             else {
                 string origin = vec[0].erase(0, 1);
                 string nick = origin.substr(0, origin.find("!") +0);
                 event_user = nick;
                 event_target = vec[2]; // todo: channel classes and assign instance here.
-                User& event_user_class = users_map.find(nick)->second;
-                if (event_target.at(0) == ':') { // compare single char?
+                //User& event_user_class = users_map.find(nick)->second;
+                //Channel& event_target_class = channels_map.find(event_target)->second;
+                if (event_target.at(0) == ':') {
                     // strip :
                     event_target = event_target.erase(0, 1);
                 }
 
-                if (vec[1] == "PRIVMSG") { event_privmsg(line); }
-                else if (vec[1] == "JOIN") { event_join(line); }
-                else if (vec[1] == "PART") { event_part(line); }
-                else if (vec[1] == "KICK") { event_kick(line); }
-                else if (vec[1] == "QUIT") { event_quit(line); }
-                else if (vec[1] == "NICK") { event_nick(line); }
+                if (vec[1] == "PRIVMSG") { event_privmsg(line); continue; }
+                else if (vec[1] == "JOIN") { event_join(line); continue; }
+                else if (vec[1] == "PART") { event_part(line); continue; }
+                else if (vec[1] == "KICK") { event_kick(line); continue; }
+                else if (vec[1] == "QUIT") { event_quit(line); continue; }
+                else if (vec[1] == "NICK") { event_nick(line); continue; }
 
             }
         }
@@ -128,10 +125,10 @@ void Bot::load_modules()
 void Bot::listen()
 {
     load_modules();
-    cout << "Listening..." << endl;
+    //cout << "Listening..." << endl;
     while (1) {
             memset(&sockbuff, '\0', sizeof(sockbuff)); // make sure sockbuff[] is empty
-            recv(sock, sockbuff, 4096, 0); // Receive all the data from server to sockbuff[]
+            recv(sock, sockbuff, 8192, 0); // Receive all the data from server to sockbuff[] 32768
             if (sockbuff[0] == '\0') { // If charray is empty
                 cout << "Lost connection." << endl;
                 break;
@@ -142,8 +139,8 @@ void Bot::listen()
 
 
 int main() {
-    Bot b1 = Bot("Sint-Ahmet_Lord-Ipsum");
+    Bot b1 = Bot("Lord-Ipsum_doctor_Sint-Ahmet");
     b1.listen();
-    std::cout << "Wat?" << std::endl;
+    cout << "Wat?" << endl;
     return 0;
 };

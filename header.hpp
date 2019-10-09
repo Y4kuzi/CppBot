@@ -5,9 +5,7 @@
 #include <vector>
 #include <map>
 
-#include "userclass.hpp"
-#include "channelclass.hpp"
-#include "modules.hpp"
+using namespace std;
 
 bool isNumber(string s)
 // Check if s is a number.
@@ -20,29 +18,39 @@ bool isNumber(string s)
 }
 
 string bot_prefix = "!";
-string server = "irc.devirc.net";
 
-string c[] = {"##", "#Bots"};
+string c[] = {"##", "#Bots", "#jwz"};
 string a[] {"Sirius", "Y4kuzi", "Maanalainen"};
 
 vector<string> irc_channel (c, c + sizeof(c) / sizeof(c[0]) );
 vector<string> admins (a, a + sizeof(a) / sizeof(a[0]) );
 
-using namespace std;
 
-
-int port = 6667;
-
+class User;
+class Channel;
+class Module;
+class Privmsg;
+class Notice;
+class Nick;
+class Kick;
+class Join;
+class Part;
+class Quit;
 class Bot {
     public:
-        char sockbuff[4096];
+        char sockbuff[8192]; // 32768
         int sock;
+        int port = 6667;
+        string server = "irc.devirc.net";
         string nickname;
         string event_user;
         string event_target;
-        //User& event_target_class;
-        map<string, User> users_map;
-        map<string, Channel> channels_map;
+        //User event_user_class;
+        //Channel event_target_class;
+        map<string, User> users_map; // The OG users
+        map<string, Channel> channels_map; // The OG channels
+
+        string chantypes;
 
         Bot(string nickname)
         {
@@ -53,9 +61,9 @@ class Bot {
             addr.sin_family = AF_INET;
             addr.sin_port = htons((unsigned short)port);
             sock = socket(AF_INET, SOCK_STREAM, 0);
-            //this->nickname = nickname;
             connect(sock, (struct sockaddr *)&addr, sizeof(addr));
-            raw("NICK Sint-Ahmet_Lord-Ipsum");
+            raw("NICK "+nickname);
+            //Elite-Conducteur adipiscing
             raw("USER ahmet 0 0 :Sint Ahmet C++ ding");
         }
 
@@ -91,12 +99,12 @@ class Bot {
     void load_modules();
     void listen();
     void raw(string data);
-    bool isin_channelusers_vector(Channel& channel, string nickname);
     void create_user(string name);
     void create_channel(string name);
     void say(string msg);
     void handle_recv(string sockbuff);
 
 };
+
 
 #endif
