@@ -13,10 +13,8 @@ class Channel {
     public:
         string name;
         vector<User*> users;
-        Channel(string name)
+        Channel(string name) : name(name)
         {
-            name = name;
-            users = users;
         }
 };
 

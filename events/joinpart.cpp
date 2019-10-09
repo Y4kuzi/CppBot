@@ -39,7 +39,6 @@ void Bot::event_join(string recv)
 
     vector<string> parts;
     boost::split(parts, origin, boost::is_any_of("!@"));
-
     if (!users_map.count(event_user)) {
         create_user(event_user);
         }
@@ -56,11 +55,10 @@ void Bot::event_join(string recv)
     user.ident = ident;
     user.host = host;
 
-    std::cout << "[JOIN] Pushing back to channel.users" << std::endl;
+    cout << "[JOIN] Pushing back to channel.users" << endl;
     channel.users.push_back(&user);
-
     Join p = Join(user, channel);
-    std::cout << "[JOIN] Checking for modules..." << std::endl;
+    cout << "[JOIN] Checking for modules..." << endl;
     notify_join(p);
 }
 
