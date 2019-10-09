@@ -13,7 +13,6 @@ class Channel;
 class User {
     public:
         Bot* bot;
-
         string nickname;
         string ident = "*";
         string host = "*";
