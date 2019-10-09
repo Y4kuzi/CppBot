@@ -10,7 +10,6 @@ void Bot::hook_join(Module* mod)
 
 }
 void Bot::notify_join(Join& p) {
-    //std::cout << "[JOIN] Notify ALL modules!" << std::endl;
     for (auto& mod : registered_join) {
         //std::cout << "[JOIN] Notifying a module..." << std::endl;
         mod->onJoin(p);
@@ -18,15 +17,12 @@ void Bot::notify_join(Join& p) {
 }
 
 
-// Part hook
 void Bot::hook_part(Module* mod)
 {
-    std::cout << "Registered module." << std::endl;
     registered_part.push_back(mod);
 
 }
 void Bot::notify_part(Part& p) {
-    //std::cout << "[PART] Notify ALL modules!" << std::endl;
     for (auto& mod : registered_part) {
         //std::cout << "[PART] Notifying a module..." << std::endl;
         mod->onPart(p);
@@ -89,5 +85,4 @@ void Bot::event_part(string recv)
     Part p = Part(user, channel);
     std::cout << "[PART] Checking for modules..." << std::endl;
     notify_part(p);
-
 }

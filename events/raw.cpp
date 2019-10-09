@@ -7,7 +7,6 @@ void Bot::event_raw(int raw, string data) {
     vector<string> vec;
     string word;
     while (ss >> word) { vec.push_back(word); }
-    //cout << "Raw: "+raw << endl;
     switch(raw)
     {
         case 001:
@@ -18,7 +17,6 @@ void Bot::event_raw(int raw, string data) {
                 this->raw("JOIN "+irc_channel[x]);
             }
             break;
-
 
         case 005:
             for (int x = 3; x < vec.size(); x++) {
@@ -33,31 +31,31 @@ void Bot::event_raw(int raw, string data) {
             break;
 
         case 353: // names reply
-        {
-            Channel& channel = channels_map.find(vec[4])->second;
-            string nick;
+            {
+                Channel& channel = channels_map.find(vec[4])->second;
+                string nick;
 
-            char remove_chars[] = ":*!~&@%+.";
-            for (int x = 5; x<vec.size(); x++) {
-                nick = vec[x];
-                for (int y = 0; y < strlen(remove_chars); y++) {
-                    nick.erase(std::remove(nick.begin(), nick.end(), remove_chars[y]), nick.end());
-                }
-
-                if (!users_map.count(nick)) {
-                    create_user(nick);
+                char remove_chars[] = ":*!~&@%+.";
+                for (int x = 5; x<vec.size(); x++) {
+                    nick = vec[x];
+                    for (int y = 0; y < strlen(remove_chars); y++) {
+                        nick.erase(std::remove(nick.begin(), nick.end(), remove_chars[y]), nick.end());
                     }
 
-                User& user = users_map.find(nick)->second;
-                if(find(channel.users.begin(), channel.users.end(), &user) == channel.users.end()) {
-                    channel.users.push_back(&user);
-                }
-                user.channels.push_back(channel);
-            };
-        }
+                    if (!users_map.count(nick)) {
+                        create_user(nick);
+                        }
+
+                    User& user = users_map.find(nick)->second;
+                    if(find(channel.users.begin(), channel.users.end(), &user) == channel.users.end()) {
+                        channel.users.push_back(&user);
+                    }
+                    user.channels.push_back(channel);
+                };
+            }
             break;
 
-        case 376:
+        case 376: // end of motd
             break;
 
     }

@@ -12,7 +12,7 @@ class Channel;
 
 class User {
     public:
-        Bot* bot;  // should always be *, never mix it. You probably can, but just don't...for now
+        Bot* bot;
 
         string nickname;
         string ident = "*";

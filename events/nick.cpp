@@ -23,12 +23,10 @@ void Bot::event_nick(string recv)
     if (newnick.at(0) == ':') {
         newnick = newnick.erase(0, 1);
     }
-    if (event_user == nickname)
-    {
+    if (event_user == nickname) {
         cout << "[NICK] Internal nickname set to: "+nickname << endl;
     }
     cout << "[NICK] "+event_user +" changed nickname to "+newnick << endl;
-
     User& user = users_map.find(event_user)->second;
     user.changeNick(newnick);
     string oldnick = user.nickname;
@@ -36,5 +34,4 @@ void Bot::event_nick(string recv)
     Nick p = Nick(user, newnick);
     std::cout << "[NICK] Checking for hooks..." << std::endl;
     notify_nick(p);
-
 }

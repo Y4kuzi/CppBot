@@ -38,15 +38,13 @@ class Part;
 class Quit;
 class Bot {
     public:
-        char sockbuff[8192]; // 32768
+        char sockbuff[8192];
         int sock;
         int port = 6667;
         string server = "irc.devirc.net";
         string nickname;
         string event_user;
         string event_target;
-        //User event_user_class;
-        //Channel event_target_class;
         map<string, User> users_map; // The OG users
         map<string, Channel> channels_map; // The OG channels
 

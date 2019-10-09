@@ -4,10 +4,8 @@
 #include <string>
 
 vector<Module *> registered_privmsg;
-
 void Bot::hook_privmsg(Module* mod)
 {
-    //std::cout << "Registered module." << std::endl;
     registered_privmsg.push_back(mod);
 
 }
@@ -43,7 +41,6 @@ void Bot::event_privmsg(string recv)
         user.host = host;
         //std::cout << "[PRIVMSG] Info of " +nick+ " updated: "+user.fullmask() << std::endl;
     }
-
 
     if (vec[3].size() == 1) {
         std::rotate(vec.begin(), vec.begin()+1, vec.end());
@@ -158,10 +155,9 @@ void Bot::event_privmsg(string recv)
             User& user = users_map.find(nick)->second;
             Channel& channel = channels_map.find(event_target)->second;
             Privmsg p = Privmsg(user, channel, msg);
-            std::cout << "[PRIVMSG] Checking for modules..." << std::endl;
+            //std::cout << "[PRIVMSG] Checking for modules..." << std::endl;
             notify_privmsg(p);
         }
-
 
 
     }

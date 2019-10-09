@@ -15,8 +15,8 @@ class Channel {
         vector<User*> users;
         Channel(string name)
         {
-            this->name = name;
-            this->users = users;
+            name = name;
+            users = users;
         }
 };
 

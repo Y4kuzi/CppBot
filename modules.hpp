@@ -77,8 +77,7 @@ class Module {
         virtual void onNotice(Notice& p) = 0;
         virtual void onJoin(Join& p) = 0;
         virtual void onPart(Part& p) = 0;
-        virtual void onKick(Part& p) = 0;
+        virtual void onKick(Kick& p) = 0;
         virtual void onQuit(Quit& p) = 0;
         virtual void onNick(Nick& p) = 0;
 };
-//*/
