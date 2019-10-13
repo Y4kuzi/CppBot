@@ -47,8 +47,8 @@ void Bot::event_join(string recv)
         create_channel(event_target);
         }
 
-    User& user = users_map.find(event_user)->second;
-    Channel& channel = channels_map.find(event_target)->second;
+    User &user = users_map.find(event_user)->second;
+    Channel &channel = channels_map.find(event_target)->second;
 
     string ident = parts[1];
     string host = parts[2];

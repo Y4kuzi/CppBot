@@ -9,16 +9,16 @@ void Bot::event_raw(int raw, string data) {
     while (ss >> word) { vec.push_back(word); }
     switch(raw)
     {
-        case 001:
+        case RPL_WELCOME:
             nickname = vec[2];
-            cout << "Nickname set: "+nickname << endl;
+            cout << "Welcome. Nickname set: "+nickname << endl;
             for (int x = 0; x < irc_channel.size(); x++)
             {
                 this->raw("JOIN "+irc_channel[x]);
             }
             break;
 
-        case 005:
+        case RPL_ISUPPORT:
             for (int x = 3; x < vec.size(); x++) {
                 vector<std::string> raw_parts;
                 boost::split(raw_parts, vec[x], boost::is_any_of("="));
@@ -30,7 +30,7 @@ void Bot::event_raw(int raw, string data) {
             }
             break;
 
-        case 353: // names reply
+        case RPL_NAMEREPLY:
             {
                 Channel& channel = channels_map.find(vec[4])->second;
                 string nick;
@@ -46,7 +46,7 @@ void Bot::event_raw(int raw, string data) {
                         create_user(nick);
                         }
 
-                    User& user = users_map.find(nick)->second;
+                    User &user = users_map.find(nick)->second;
                     if(find(channel.users.begin(), channel.users.end(), &user) == channel.users.end()) {
                         channel.users.push_back(&user);
                     }
@@ -55,7 +55,7 @@ void Bot::event_raw(int raw, string data) {
             }
             break;
 
-        case 376: // end of motd
+        case RPL_ENDOFMOTD: // end of motd
             break;
 
     }

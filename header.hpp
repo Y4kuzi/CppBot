@@ -7,6 +7,15 @@
 
 using namespace std;
 
+// Declare raws.
+
+enum Raws {
+    RPL_WELCOME = 001,
+    RPL_ISUPPORT = 005,
+    RPL_NAMEREPLY = 353,
+    RPL_ENDOFMOTD = 376
+};
+
 bool isNumber(string s)
 // Check if s is a number.
 {

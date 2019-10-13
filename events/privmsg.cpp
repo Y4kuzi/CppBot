@@ -30,12 +30,12 @@ void Bot::event_privmsg(string recv)
     vector<string> parts;
     boost::split(parts, origin, boost::is_any_of("!@"));
     string nick = parts[0];
-    Channel& channel = channels_map.find(event_target)->second;
+    Channel &channel = channels_map.find(event_target)->second;
 
     if (users_map.count(nick)) {
         string ident = parts[1];
         string host = parts[2];
-        User& user = users_map.find(nick)->second;
+        User &user = users_map.find(nick)->second;
         user.nickname = nick;
         user.ident = ident;
         user.host = host;
@@ -55,9 +55,8 @@ void Bot::event_privmsg(string recv)
     transform(cmd.begin(), cmd.end(), cmd.begin(), ::tolower);
 
     if (prefix == bot_prefix) {
-        if (cmd == "ping") {
+        if (cmd == "ping")
             say("PONG MOTHERFUCKER "+nick);
-        }
 
         else if (cmd == "setprefix" and std::find(std::begin(admins), std::end(admins), nick) != admins.end() and vec.size() > 4) {
             bot_prefix = vec[4].at(0);
@@ -78,17 +77,14 @@ void Bot::event_privmsg(string recv)
 
         else if (cmd == "whoishere") {
             Channel& channel = channels_map.find(event_target)->second;
-            for (auto &u : channel.users) {
+            for (auto &u : channel.users)
                 say("I found: "+u->fullmask()+" on "+channel.name);
-            }
         }
-
 
         else if (cmd == "userlist") {
             say("I am woke about the following users:");
-            for (auto &u : users_map) {
+            for (auto &u : users_map)
                 say(u.second.fullmask());
-            }
         }
 
         else if (cmd == "chanlist") {
@@ -127,23 +123,22 @@ void Bot::event_privmsg(string recv)
             cout << first << endl;
             cout << chantypes << endl;
             if (chantypes.find(first) == string::npos) { // Not found
-               //say("Invalid channel type. Valid types are: "+first);
+               //say("Invalid channel type '"+first+"'. Valid types are: "+chantypes);
                say("Invalid channel type. Valid types are: "+chantypes);
                return;
             }
-
         }
 
         else if (cmd == "raw" and std::find(std::begin(admins), std::end(admins), nick) != admins.end()) {
             if (vec.size() < 5) {
                 return;
             }
-            string raw;
+            string rawcmd;
             for (int x = 4; x < vec.size(); x++) {
-                raw = raw+" "+vec[x];
+                rawcmd = rawcmd+" "+vec[x];
             }
-            raw.erase(raw.begin(), std::find_if(raw.begin(), raw.end(), std::bind1st(std::not_equal_to<char>(), ' ')));
-            this->raw(raw);
+            rawcmd.erase(rawcmd.begin(), std::find_if(rawcmd.begin(), rawcmd.end(), std::bind1st(std::not_equal_to<char>(), ' ')));
+            raw(rawcmd);
         }
 
         if (users_map.count(event_user)) {
