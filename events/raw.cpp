@@ -6,16 +6,14 @@ void Bot::event_raw(int raw, string data) {
     stringstream ss(data);
     vector<string> vec;
     string word;
-    while (ss >> word) { vec.push_back(word); }
+    while (ss >> word) vec.push_back(word);
     switch(raw)
     {
         case RPL_WELCOME:
             nickname = vec[2];
             cout << "Welcome. Nickname set: "+nickname << endl;
             for (int x = 0; x < irc_channel.size(); x++)
-            {
                 this->raw("JOIN "+irc_channel[x]);
-            }
             break;
 
         case RPL_ISUPPORT:
@@ -38,24 +36,22 @@ void Bot::event_raw(int raw, string data) {
                 char remove_chars[] = ":*!~&@%+.";
                 for (int x = 5; x<vec.size(); x++) {
                     nick = vec[x];
-                    for (int y = 0; y < strlen(remove_chars); y++) {
+                    for (int y = 0; y < strlen(remove_chars); y++)
                         nick.erase(std::remove(nick.begin(), nick.end(), remove_chars[y]), nick.end());
-                    }
 
-                    if (!users_map.count(nick)) {
+                    if (!users_map.count(nick))
                         create_user(nick);
-                        }
 
                     User &user = users_map.find(nick)->second;
-                    if(find(channel.users.begin(), channel.users.end(), &user) == channel.users.end()) {
+                    if (find(channel.users.begin(), channel.users.end(), &user) == channel.users.end())
                         channel.users.push_back(&user);
-                    }
+
                     user.channels.push_back(channel);
                 };
             }
             break;
 
-        case RPL_ENDOFMOTD: // end of motd
+        case RPL_ENDOFMOTD:
             break;
 
     }

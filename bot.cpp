@@ -25,8 +25,8 @@ void Bot::raw(string data)
     stringstream ss(data);
     vector<string> vec;
     string word;
-    while (ss >> word) { vec.push_back(word); }
-    if (vec[0] != "PONG") { cout << "<< " << data << endl; }
+    while (ss >> word) vec.push_back(word);
+    if (vec[0] != "PONG") cout << "<< " << data << endl;
 }
 
 void Bot::create_channel(string name)
@@ -51,41 +51,39 @@ void Bot::handle_recv(string sockbuff) {
         vector<string> vec;
         string word;
         while (ss >> word) { vec.push_back(word); }
-        if (vec.size() == 0) {
+        if (vec.size() == 0)
             continue;
-        }
-        if (vec[0] == "PING") {
+        if (vec[0] == "PING")
             raw("PONG "+vec[1]);
-            continue;
-        }
 
         if (vec.size() > 2) {
-            if (vec[1] != "372") { // Skip MOTD spam in cout.
+            if (vec[1] != "372") // Skip MOTD spam in cout.
                 cout << ">> " << line << endl;
-            }
+
             if (isNumber(vec[1])) {
                 int raw;
                 istringstream ( vec[1] ) >> raw;
                 event_raw(raw, line);
-                continue;
             }
             else {
                 string origin = vec[0].erase(0, 1);
                 string nick = origin.substr(0, origin.find("!") +0);
                 event_user = nick;
-                event_target = vec[2]; // todo: channel classes and assign instance here.
-                //User& event_user_class = users_map.find(nick)->second;
-                //Channel& event_target_class = channels_map.find(event_target)->second;
-                if (event_target.at(0) == ':') {
-                    // strip :
+                event_target = vec[2];
+                if (event_target.at(0) == ':')
                     event_target = event_target.erase(0, 1);
-                }
-                if (vec[1] == "PRIVMSG") { event_privmsg(line); continue; }
-                else if (vec[1] == "JOIN") { event_join(line); continue; }
-                else if (vec[1] == "PART") { event_part(line); continue; }
-                else if (vec[1] == "KICK") { event_kick(line); continue; }
-                else if (vec[1] == "QUIT") { event_quit(line); continue; }
-                else if (vec[1] == "NICK") { event_nick(line); continue; }
+                if (vec[1] == "PRIVMSG")
+                    event_privmsg(line);
+                else if (vec[1] == "JOIN")
+                    event_join(line);
+                else if (vec[1] == "PART")
+                    event_part(line);
+                else if (vec[1] == "KICK")
+                    event_kick(line);
+                else if (vec[1] == "QUIT")
+                    event_quit(line);
+                else if (vec[1] == "NICK")
+                    event_nick(line);
             }
         }
 
@@ -96,12 +94,11 @@ void Bot::say(string msg)
 {
     string target;
     if (channels_map.count(event_target)) {
-        Channel& channel = channels_map.find(event_target)->second;
+        Channel &channel = channels_map.find(event_target)->second;
         target = channel.name;
     }
-    else {
+    else
         target = event_target;
-    }
     raw("PRIVMSG "+target +" :"+msg);
 }
 
@@ -135,6 +132,5 @@ void Bot::listen()
 int main() {
     Bot b1 = Bot("Lord-Ipsum_doctor_Sint-Ahmet");
     b1.listen();
-    cout << "Wat?" << endl;
     return 0;
 };
