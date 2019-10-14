@@ -1,13 +1,9 @@
-#include <iostream>
-#include <netdb.h>
-#include <sstream>
-#include <boost/algorithm/string.hpp> // libboost-dev
-//#include <unistd.h>
+#include "header.h"
+#include "bot.h"
 
-#include "header.hpp"
-#include "userclass.hpp"
-#include "channelclass.hpp"
-#include "modules.hpp"
+#include "userclass.h"
+#include "channelclass.h"
+#include "modules.h"
 
 #include "events/raw.cpp"
 #include "events/privmsg.cpp"
