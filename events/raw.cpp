@@ -11,7 +11,7 @@ void Bot::event_raw(int raw, string data) {
     {
         case RPL_WELCOME:
             nickname = vec[2];
-            cout << "Welcome. Nickname set: "+nickname << endl;
+            cout << "Nickname set: "+nickname << endl;
             for (int x = 0; x < irc_channel.size(); x++)
                 this->raw("JOIN "+irc_channel[x]);
             break;
@@ -30,9 +30,8 @@ void Bot::event_raw(int raw, string data) {
 
         case RPL_NAMEREPLY:
             {
-                Channel& channel = channels_map.find(vec[4])->second;
+                Channel &channel = channels_map.find(vec[4])->second;
                 string nick;
-
                 char remove_chars[] = ":*!~&@%+.";
                 for (int x = 5; x<vec.size(); x++) {
                     nick = vec[x];
@@ -45,7 +44,6 @@ void Bot::event_raw(int raw, string data) {
                     User &user = users_map.find(nick)->second;
                     if (find(channel.users.begin(), channel.users.end(), &user) == channel.users.end())
                         channel.users.push_back(&user);
-
                     user.channels.push_back(channel);
                 };
             }

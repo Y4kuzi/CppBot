@@ -4,10 +4,9 @@
 #include <iostream>
 #include <vector>
 #include <map>
+#include <netinet/in.h> // for Android
 
 using namespace std;
-
-// Declare raws.
 
 enum Raws {
     RPL_WELCOME = 001,
@@ -17,7 +16,6 @@ enum Raws {
 };
 
 bool isNumber(string s)
-// Check if s is a number.
 {
     for (int i = 0; i < s.length(); i++)
         if (isdigit(s[i]) == false)
@@ -28,12 +26,8 @@ bool isNumber(string s)
 
 string bot_prefix = "!";
 
-string c[] = {"##", "#Bots", "#jwz"};
-string a[] {"Sirius", "Y4kuzi", "Maanalainen"};
-
-vector<string> irc_channel (c, c + sizeof(c) / sizeof(c[0]) );
-vector<string> admins (a, a + sizeof(a) / sizeof(a[0]) );
-
+vector<string> irc_channel = {"##", "#Bots", "#jwz"};
+vector<string> admins = {"Sirius", "Y4kuzi", "Maanalainen"};
 
 class User;
 class Channel;
@@ -47,7 +41,7 @@ class Part;
 class Quit;
 class Bot {
     public:
-        char sockbuff[8192];
+        char sockbuff[512]; // 16384
         int sock;
         int port = 6667;
         string server = "irc.devirc.net";
@@ -56,9 +50,7 @@ class Bot {
         string event_target;
         map<string, User> users_map; // The OG users
         map<string, Channel> channels_map; // The OG channels
-
         string chantypes;
-
         Bot(string nickname)
         {
             struct sockaddr_in addr;
@@ -98,8 +90,8 @@ class Bot {
 
     void event_raw(int raw, string line); // raw.cpp
     void event_privmsg(string line); // privmsg.cpp
-    void event_join(string line); // join.cpp
-    void event_part(string line); // part.cpp
+    void event_join(string line); // joinpart.cpp
+    void event_part(string line); // joinpart.cpp
     void event_kick(string line); // kick.cpp
     void event_quit(string line); // quit.cpp
     void event_nick(string line); // nick.cpp
@@ -110,8 +102,6 @@ class Bot {
     void create_channel(string name);
     void say(string msg);
     void handle_recv(string sockbuff);
-
 };
-
 
 #endif

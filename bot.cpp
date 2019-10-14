@@ -1,10 +1,8 @@
 #include <iostream>
-//#include <sys/socket.h>
-//#include <sys/types.h>
-//#include <cstring>
 #include <netdb.h>
 #include <sstream>
 #include <boost/algorithm/string.hpp> // libboost-dev
+//#include <unistd.h>
 
 #include "header.hpp"
 #include "userclass.hpp"
@@ -41,52 +39,45 @@ void Bot::create_user(string name)
     users_map.emplace(user.nickname, user);
 }
 
-void Bot::handle_recv(string sockbuff) {
-    stringstream ss(sockbuff);
-    string line;
-    //cout << "[RECV] Sockbuff size: ";
-    //cout << sockbuff.size() << endl;
-    while (getline(ss, line, '\n')) {
-        stringstream ss(line);
-        vector<string> vec;
-        string word;
-        while (ss >> word) { vec.push_back(word); }
-        if (vec.size() == 0)
-            continue;
-        if (vec[0] == "PING")
-            raw("PONG "+vec[1]);
+void Bot::handle_recv(string data) {
+    stringstream ss(data);
+    vector<string> vec;
+    string word;
+    while (ss >> word) { vec.push_back(word); }
+    if (vec.size() == 0)
+        return;
+    if (vec[0] == "PING")
+        raw("PONG "+vec[1]);
 
-        if (vec.size() > 2) {
-            if (vec[1] != "372") // Skip MOTD spam in cout.
-                cout << ">> " << line << endl;
+    if (vec.size() > 2) {
+        if (vec[1] != "372") // Skip MOTD spam in cout.
+            cout << ">> " << data << endl;
 
-            if (isNumber(vec[1])) {
-                int raw;
-                istringstream ( vec[1] ) >> raw;
-                event_raw(raw, line);
-            }
-            else {
-                string origin = vec[0].erase(0, 1);
-                string nick = origin.substr(0, origin.find("!") +0);
-                event_user = nick;
-                event_target = vec[2];
-                if (event_target.at(0) == ':')
-                    event_target = event_target.erase(0, 1);
-                if (vec[1] == "PRIVMSG")
-                    event_privmsg(line);
-                else if (vec[1] == "JOIN")
-                    event_join(line);
-                else if (vec[1] == "PART")
-                    event_part(line);
-                else if (vec[1] == "KICK")
-                    event_kick(line);
-                else if (vec[1] == "QUIT")
-                    event_quit(line);
-                else if (vec[1] == "NICK")
-                    event_nick(line);
-            }
+        if (isNumber(vec[1])) {
+            int raw;
+            istringstream ( vec[1] ) >> raw;
+            event_raw(raw, data);
         }
-
+        else {
+            string origin = vec[0].erase(0, 1);
+            string nick = origin.substr(0, origin.find("!") +0);
+            event_user = nick;
+            event_target = vec[2];
+            if (event_target.at(0) == ':')
+                event_target = event_target.erase(0, 1);
+            if (vec[1] == "PRIVMSG")
+                event_privmsg(data);
+            else if (vec[1] == "JOIN")
+                event_join(data);
+            else if (vec[1] == "PART")
+                event_part(data);
+            else if (vec[1] == "KICK")
+                event_kick(data);
+            else if (vec[1] == "QUIT")
+                event_quit(data);
+            else if (vec[1] == "NICK")
+                event_nick(data);
+        }
     }
 }
 
@@ -118,14 +109,33 @@ void Bot::listen()
 {
     load_modules();
     //cout << "Listening..." << endl;
+    char complete_char[512];
+    int c_count = 0;
+
     while (1) {
-            memset(&sockbuff, '\0', sizeof(sockbuff)); // make sure sockbuff[] is empty
-            recv(sock, sockbuff, 8192, 0); // Receive all the data from server to sockbuff[]
+        memset(&sockbuff, '\0', sizeof(sockbuff)); // make sure sockbuff[] is empty
+        if (recv(sock, sockbuff, 512, 0)) { // Receive all the data from server to sockbuff[] 16384
             if (sockbuff[0] == '\0') { // If charray is empty
                 cout << "Lost connection." << endl;
                 break;
             }
-            handle_recv(sockbuff);
+            if (strlen(complete_char) > 0) {
+                //cout << "We have data remaining from our previous read: " << complete_char << endl;
+            }
+
+            for (int i = 0; i < sizeof(sockbuff) / sizeof(sockbuff[0]); i++, c_count++) {
+                if (sockbuff[i] == 0) // End of sockbuff has been reached, the rest is empty.
+                    //cout << "Done reading complete sockbuff. Size was: " << i << endl;
+                    break;
+                if (sockbuff[i] != '\n') {
+                    complete_char[c_count] = sockbuff[i];
+                    continue;
+                }
+                handle_recv(complete_char);
+                memset(&complete_char, '\0', sizeof(complete_char));
+                c_count = -1;
+            }
+        }
     }
 }
 

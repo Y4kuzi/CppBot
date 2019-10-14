@@ -68,7 +68,7 @@ void Bot::event_privmsg(string recv)
                 say("I don't know you.");
                 return;
             }
-            User& user = users_map.find(event_user)->second;
+            User &user = users_map.find(event_user)->second;
             say("This is what I know about you:");
             say("Your nickname is: "+user.nickname);
             say("Your ident is: "+user.ident);
