@@ -12,7 +12,7 @@ enum Raws {
 
 bool isNumber(string s)
 {
-    for (int i = 0; i < s.length(); i++)
+    for (int i = 0; i < (int)s.length(); i++)
         if (isdigit(s[i]) == false)
             return false;
 
@@ -21,7 +21,7 @@ bool isNumber(string s)
 
 string bot_prefix = "!";
 
-vector<string> irc_channel = {"##", "#Bots", "#jwz"};
+vector<string> irc_channel = {"#bla"};
 vector<string> admins = {"Sirius", "Y4kuzi", "Maanalainen"};
 
 class Bot {
@@ -29,7 +29,7 @@ class Bot {
         char sockbuff[512]; // 16384
         int sock;
         int port = 6667;
-        string server = "irc.devirc.net";
+        string server = "emma.devirc.net";
         string nickname;
         string event_user;
         string event_target;

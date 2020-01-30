@@ -2,7 +2,8 @@
 #define _HEADER
 
 #include <iostream>
-#include <netdb.h>
+#include <netdb.h> // For Linux
+//#include <winsock.h> // For Windows
 #include <sstream>
 #include <boost/algorithm/string.hpp> // libboost-dev
 //#include <unistd.h>

@@ -40,8 +40,9 @@ void Bot::handle_recv(string data) {
     vector<string> vec;
     string word;
     while (ss >> word) { vec.push_back(word); }
-    if (vec.size() == 0)
+    if (vec.size() == 0) {
         return;
+	}
     if (vec[0] == "PING")
         raw("PONG "+vec[1]);
 
@@ -50,7 +51,7 @@ void Bot::handle_recv(string data) {
             cout << ">> " << data << endl;
 
         if (isNumber(vec[1])) {
-            int raw;
+            int raw {};
             istringstream ( vec[1] ) >> raw;
             event_raw(raw, data);
         }
@@ -91,13 +92,13 @@ void Bot::say(string msg)
 
 void Bot::load_modules()
 {
-    Module* m;
+    //Module* m;
 
-    #include "modules/m_test.hpp"
-    m = new Test(this);
+    //#include "modules/m_test.hpp"
+    //m = new Test(this);
 
-    #include "modules/m_8ball.hpp"
-    m = new _8Ball(this);
+    //#include "modules/m_8ball.hpp"
+    //m = new _8Ball(this);
 
 }
 
@@ -119,7 +120,7 @@ void Bot::listen()
                 //cout << "We have data remaining from our previous read: " << complete_char << endl;
             }
 
-            for (int i = 0; i < sizeof(sockbuff) / sizeof(sockbuff[0]); i++, c_count++) {
+            for (int i = 0; i < static_cast<int>(sizeof(sockbuff) / sizeof(sockbuff[0])); i++, c_count++) {
                 if (sockbuff[i] == 0) // End of sockbuff has been reached, the rest is empty.
                     //cout << "Done reading complete sockbuff. Size was: " << i << endl;
                     break;
@@ -136,7 +137,8 @@ void Bot::listen()
 }
 
 int main() {
-    Bot b1 = Bot("Lord-Ipsum_doctor_Sint-Ahmet");
+    //Bot b1 = Bot("Lord-Ipsum_doctor_Sint-Ahmet");
+    Bot b1 = Bot("hoi");
     b1.listen();
     return 0;
 };

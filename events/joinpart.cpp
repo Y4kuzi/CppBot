@@ -72,6 +72,7 @@ void Bot::event_part(string recv)
     if (user.nickname == nickname) {
         channels_map.erase(channel.name);
         std::cout << "[PART] Removed channel from map." << std::endl;
+        //channel.users.clear(); // Needs testing.
     }
 
     Part p = Part(user, channel);
